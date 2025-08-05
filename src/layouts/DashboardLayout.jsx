@@ -14,6 +14,9 @@ const DashboardLayout = () => {
           <NavLink to="addPolicy" className={navItemClass}>
             Add Policy
           </NavLink>
+          <NavLink to="myApplication" className={navItemClass}>
+           My Application
+          </NavLink>
           <NavLink to="addBlogs" className={navItemClass}>
             Add Blogs
           </NavLink>

@@ -135,7 +135,7 @@ const QuotePage = () => {
           <p>📆 Annual: ৳ {quote.annual}</p>
 
           <Link
-            onClick={() => navigate("/apply")}
+            onClick={() => navigate("/policy-apply-from")}
             className="mt-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
           >
             Apply for Policy

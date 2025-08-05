@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import useAxios from "../../hooks/useAxios";
+import SocialLogin from "../../Components/Shared/SocialLogin";
  
 
 const Register = () => {
