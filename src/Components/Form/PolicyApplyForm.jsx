@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 const PolicyApplyForm = () => {
   const { user } = useAuth();
+    const navigate = useNavigate(); 
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "", // শুরুর মান খালি রাখলাম
+    email: "", //starting value blank.
     address: "",
     nid: "",
     nomineeName: "",
@@ -42,46 +45,61 @@ const PolicyApplyForm = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+   const handleSubmit = async (e) => {
+     e.preventDefault();
 
-    if (!formData.email) {
-      alert("User email is required to submit application.");
-      return;
-    }
+     if (!formData.email) {
+       alert("User email is required to submit application.");
+       return;
+     }
 
-    setLoading(true); // সাবমিট শুরু হলে loading true করে দাও
+     setLoading(true);
 
-    const applicationData = {
-      ...formData,
-      status: "Pending",
-      appliedAt: new Date(),
-    };
+     const applicationData = {
+       ...formData,
+       status: "Pending",
+       appliedAt: new Date(),
+     };
 
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/applications",
-        applicationData
-      );
-      if (res.data.insertedId) {
-        alert("Application submitted successfully!");
-        setFormData({
-          name: "",
-          email: user.email,
-          address: "",
-          nid: "",
-          nomineeName: "",
-          relationship: "",
-          healthConditions: [],
-        });
-      }
-    } catch (err) {
-      console.error("Failed to submit application:", err);
-      alert("Failed to submit application.");
-    } finally {
-      setLoading(false); // সবশেষে loading false করে দাও
-    }
-  };
+     try {
+       const res = await axios.post(
+         "http://localhost:5000/applications",
+         applicationData
+       );
+
+       if (res.data.insertedId) {
+         Swal.fire({
+           title: "Success!",
+           text: "Application submitted successfully!",
+           icon: "success",
+           confirmButtonText: "OK",
+         }).then(() => {
+      
+           navigate("/dashboard/myApplication");
+         });
+
+         setFormData({
+           name: "",
+           email: user.email,
+           address: "",
+           nid: "",
+           nomineeName: "",
+           relationship: "",
+           healthConditions: [],
+         });
+       }
+     } catch (error) {
+       console.error(error);
+       Swal.fire({
+         title: "Error!",
+         text: "Something went wrong while submitting.",
+         icon: "error",
+         confirmButtonText: "OK",
+       });
+     } finally {
+       setLoading(false);
+     }
+   };
 
   return (
     <div className="max-w-2xl mx-auto p-6 text-black">

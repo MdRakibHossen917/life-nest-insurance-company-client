@@ -95,7 +95,9 @@ const Navbar = () => {
 
       {/* 🔶 Right: Auth button */}
       <div className="navbar-end">
+        <p>{user?.email || "Not email" }</p>
         {user ? (
+       
           <button
             onClick={handleLogOut}
             className="btn btn-outline btn-accent text-black font-bold"

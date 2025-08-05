@@ -1,157 +1,147 @@
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
- 
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router";
-import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const MyApplication = () => {
-  const { user } = useAuth();
-  const axiosSecure = useAxiosSecure();
-  const navigate = useNavigate();
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState("");
 
-  const {
-    data: parcels = [],
-    refetch,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["my-parcels", user?.email],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/parcels?email=${user.email}`);
-      return res.data;
-    },
-    enabled: !!user?.email,
-  });
-
-  const handleView = (id) => {
-    navigate(`/dashboard/parcels/${id}`);
-  };
-
-  const handlePay = (id) => {
-    navigate(`/dashboard/payment/${id}`);
-  };
-
-  const handleDelete = async (id) => {
-    const confirm = await Swal.fire({
-      title: "Are you sure?",
-      text: "This parcel will be permanently deleted!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it",
-      cancelButtonText: "Cancel",
-      confirmButtonColor: "#e11d48",
-      cancelButtonColor: "#6b7280",
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserEmail(user.email);
+      } else {
+        setUserEmail("");
+        setApplications([]);
+        setLoading(false);
+      }
     });
 
-    if (confirm.isConfirmed) {
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      if (!userEmail) return;
+
       try {
-        const res = await axiosSecure.delete(`/parcels/${id}`);
-        if (res.data.deletedCount > 0) {
-          Swal.fire({
-            title: "Deleted!",
-            text: "Parcel has been deleted.",
-            icon: "success",
-            timer: 1500,
-            showConfirmButton: false,
-          });
-          refetch();
-        }
-      } catch (err) {
-        Swal.fire("Error", err.message || "Failed to delete parcel", "error");
+        const response = await axios.get(
+          `http://localhost:5000/applications?email=${userEmail}`
+        );
+        setApplications(response.data);
+      } catch (error) {
+        console.error("Error fetching applications:", error);
+      } finally {
+        setLoading(false);
       }
+    };
+
+    fetchApplications();
+  }, [userEmail]);
+
+  const handleDelete = async (id) => {
+    const confirm = window.confirm("❗Are you sure you want to delete?");
+    if (!confirm) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/applications/${id}`);
+      setApplications(applications.filter((app) => app._id !== id));
+    } catch (error) {
+      console.error("Delete failed:", error);
     }
   };
 
-  const formatDate = (iso) => new Date(iso).toLocaleString();
+  const handlePay = (id) => {
+    alert("💳 Payment clicked for application ID: " + id);
+    // এখানে পরে Stripe integration বা অন্য logic দিতে পারো
+  };
 
-  if (isLoading) {
-    return <p className="text-center mt-4">Loading parcels...</p>;
-  }
-
-  if (error) {
+  if (loading) {
     return (
-      <p className="text-center mt-4 text-red-500">
-        Error loading parcels: {error.message}
+      <p className="text-center mt-10 text-gray-600 dark:text-gray-300">
+        Loading applications...
       </p>
     );
   }
 
   return (
-    <div className="overflow-x-auto shadow-md rounded-xl">
-      <h2 className="text-lg font-semibold px-4 py-2">
-        My Parcels: {parcels.length}
+    <div className="max-w-6xl mx-auto p-4">
+      <h2 className="text-3xl font-bold text-center  mb-6 dark:text-gray-900">
+        My Applications
       </h2>
-      <table className="table table-zebra w-full">
-        <thead className="bg-base-200 text-base font-semibold">
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Created At</th>
-            <th>Cost</th>
-            <th>Payment</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {parcels.length === 0 && (
-            <tr>
-              <td colSpan="7" className="text-center text-gray-500 py-6">
-                No parcels found.
-              </td>
-            </tr>
-          )}
-          {parcels.map((parcel, index) => (
-            <tr key={parcel._id}>
-              <td>{index + 1}</td>
-              <td className="max-w-[180px] truncate">{parcel.title}</td>
-              <td className="capitalize">{parcel.type}</td>
-              <td>{formatDate(parcel.createdAt)}</td>
-              <td>
-                ৳
-                {parcel.cost !== undefined
-                  ? Number(parcel.cost).toFixed(2)
-                  : "N/A"}
-              </td>
-              <td>
-                <span
-                  className={`badge ${
-                    parcel.payment_status === "paid"
-                      ? "badge-success"
-                      : "badge-error"
-                  }`}
+
+      {applications.length === 0 ? (
+        <div className="text-center text-gray-500 dark:text-gray-400 text-lg mt-10">
+          😕 No applications found.
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white dark:bg-gray-800 border rounded shadow">
+            <thead className="bg-gray-100 dark:bg-gray-700 text-left">
+              <tr className="text-gray-700 dark:text-gray-300">
+                <th className="py-3 px-4 border-b">Name</th>
+                <th className="py-3 px-4 border-b">Email</th>
+                <th className="py-3 px-4 border-b">Status</th>
+                <th className="py-3 px-4 border-b">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {applications.map(({ _id, name, email, status }) => (
+                <tr
+                  key={_id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
-                  {parcel.payment_status ?? "unknown"}
-                </span>
-              </td>
-              <td className="space-x-2">
-                <button
-                  onClick={() => handleView(parcel._id)}
-                  className="btn btn-xs btn-outline"
-                >
-                  View
-                </button>
-                {parcel.payment_status === "unpaid" && (
-                  <button
-                    onClick={() => handlePay(parcel._id)}
-                    className="btn btn-xs btn-primary text-black"
-                  >
-                    Pay
-                  </button>
-                )}
-                <button
-                  onClick={() => handleDelete(parcel._id)}
-                  className="btn btn-xs btn-error"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <td className="py-3 px-4 border-b dark:text-white">{name}</td>
+                  <td className="py-3 px-4 border-b dark:text-white">
+                    {email}
+                  </td>
+                  <td className="py-3 px-4 border-b">
+                    <span
+                      className={`px-2 py-1 rounded-full text-sm font-medium ${
+                        status === "Approved"
+                          ? "bg-green-100 text-green-600"
+                          : status === "Rejected"
+                          ? "bg-red-100 text-red-600"
+                          : "bg-yellow-100 text-yellow-600"
+                      }`}
+                    >
+                      {status || "Pending"}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 border-b space-x-2">
+                    <button
+                      onClick={() =>
+                        alert(
+                          `📄 Application Details:\n\nName: ${name}\nEmail: ${email}\nStatus: ${
+                            status || "Pending"
+                          }`
+                        )
+                      }
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                    >
+                      View
+                    </button>
+                    <button
+                      onClick={() => handlePay(_id)}
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+                    >
+                      Pay
+                    </button>
+                    <button
+                      onClick={() => handleDelete(_id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
