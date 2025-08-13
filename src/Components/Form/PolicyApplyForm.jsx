@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+import { getAuth } from "firebase/auth"; // <-- import firebase auth
 
 const PolicyApplyForm = () => {
   const { user } = useAuth();
-    const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { estimatedPremium } = location.state || {};
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "", //starting value blank.
+    email: "",
+    estimatedPremium: estimatedPremium || "",
     address: "",
     nid: "",
     nomineeName: "",
@@ -18,13 +22,17 @@ const PolicyApplyForm = () => {
     healthConditions: [],
   });
 
-  const [loading, setLoading] = useState(false); // loading state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user?.email) {
-      setFormData((prev) => ({ ...prev, email: user.email }));
+      setFormData((prev) => ({
+        ...prev,
+        email: user.email,
+        name: user.name || "",
+      }));
     }
-  }, [user?.email]);
+  }, [user?.email, user?.name]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,121 +53,205 @@ const PolicyApplyForm = () => {
     });
   };
 
-   const handleSubmit = async (e) => {
-     e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-     if (!formData.email) {
-       alert("User email is required to submit application.");
-       return;
-     }
+    if (!formData.email) {
+      alert("User email is required to submit application.");
+      return;
+    }
 
-     setLoading(true);
+    setLoading(true);
 
-     const applicationData = {
-       ...formData,
-       status: "Pending",
-       appliedAt: new Date(),
-     };
+    const applicationData = {
+      ...formData,
+      status: "pending",
+      appliedAt: new Date(),
+    };
 
-     try {
-       const res = await axios.post(
-         "http://localhost:5000/applications",
-         applicationData
-       );
+    try {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
 
-       if (res.data.insertedId) {
-         Swal.fire({
-           title: "Success!",
-           text: "Application submitted successfully!",
-           icon: "success",
-           confirmButtonText: "OK",
-         }).then(() => {
-      
-           navigate("/dashboard/myApplication");
-         });
+      if (!currentUser) {
+        alert("User not authenticated.");
+        setLoading(false);
+        return;
+      }
 
-         setFormData({
-           name: "",
-           email: user.email,
-           address: "",
-           nid: "",
-           nomineeName: "",
-           relationship: "",
-           healthConditions: [],
-         });
-       }
-     } catch (error) {
-       console.error(error);
-       Swal.fire({
-         title: "Error!",
-         text: "Something went wrong while submitting.",
-         icon: "error",
-         confirmButtonText: "OK",
-       });
-     } finally {
-       setLoading(false);
-     }
-   };
+      // Get Firebase ID Token for Authorization header
+      const idToken = await currentUser.getIdToken();
+
+      const res = await axios.post(
+        "http://localhost:5000/applications",
+        applicationData,
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+      );
+
+      if (res.data.insertedId) {
+        Swal.fire({
+          title: "Success!",
+          text: "Application submitted successfully! Proceed to payment.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate(`/dashboard/payment/${res.data.insertedId}`);
+        });
+
+        setFormData({
+          name: user.name || "",
+          email: user.email,
+          estimatedPremium: "",
+          address: "",
+          nid: "",
+          nomineeName: "",
+          relationship: "",
+          healthConditions: [],
+        });
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Something went wrong while submitting.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 text-black">
-      <h2 className="text-2xl font-bold mb-4">Policy Application Form</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-          disabled={loading}
-        />
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          readOnly
-          className="w-full border p-2 rounded bg-gray-200 cursor-not-allowed"
-          disabled={loading}
-        />
-        <input
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-          disabled={loading}
-        />
-        <input
-          name="nid"
-          type="number"
-          placeholder="NID Number"
-          value={formData.nid}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-          disabled={loading}
-        />
-        <input
-          name="nomineeName"
-          placeholder="Nominee Name"
-          value={formData.nomineeName}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-          disabled={loading}
-        />
-        <input
-          name="relationship"
-          placeholder="Relationship"
-          value={formData.relationship}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-          disabled={loading}
-        />
+    <div className="max-w-2xl mx-auto p-6 text-black bg-white rounded shadow">
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        Policy Application Form
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Name */}
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="name">
+            Full Name
+          </label>
+          <input
+            id="name"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="email">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            readOnly
+            disabled={loading}
+            className="w-full border border-gray-300 p-3 rounded bg-gray-100 cursor-not-allowed"
+          />
+        </div>
+
+        {/* Estimated Premium */}
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="estimatedPremium">
+            Estimated Monthly Premium (৳)
+          </label>
+          <input
+            id="estimatedPremium"
+            name="estimatedPremium"
+            type="text"
+            value={formData.estimatedPremium}
+            readOnly
+            disabled
+            className="w-full border border-gray-300 p-3 rounded bg-gray-100 cursor-not-allowed text-gray-700"
+          />
+        </div>
+
+        {/* Address */}
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="address">
+            Address
+          </label>
+          <input
+            id="address"
+            name="address"
+            placeholder="Address"
+            value={formData.address}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* NID */}
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="nid">
+            NID Number
+          </label>
+          <input
+            id="nid"
+            name="nid"
+            type="number"
+            placeholder="NID Number"
+            value={formData.nid}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Nominee */}
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="nomineeName">
+            Nominee Name
+          </label>
+          <input
+            id="nomineeName"
+            name="nomineeName"
+            placeholder="Nominee Name"
+            value={formData.nomineeName}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Relationship */}
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="relationship">
+            Relationship
+          </label>
+          <input
+            id="relationship"
+            name="relationship"
+            placeholder="Relationship"
+            value={formData.relationship}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Health Conditions */}
         <fieldset className="border p-4 rounded" disabled={loading}>
           <legend className="font-semibold mb-2">Health Conditions:</legend>
           {[
@@ -169,13 +261,14 @@ const PolicyApplyForm = () => {
             "Cancer",
             "None of the Above",
           ].map((item) => (
-            <div key={item}>
-              <label className="inline-flex items-center space-x-2">
+            <div key={item} className="mb-1">
+              <label className="inline-flex items-center space-x-2 cursor-pointer">
                 <input
                   type="checkbox"
                   value={item}
                   onChange={handleCheckboxChange}
                   checked={formData.healthConditions.includes(item)}
+                  className="cursor-pointer"
                 />
                 <span>{item}</span>
               </label>
@@ -183,10 +276,11 @@ const PolicyApplyForm = () => {
           ))}
         </fieldset>
 
+        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className={`px-6 py-2 rounded text-white ${
+          className={`w-full px-6 py-3 rounded text-white text-lg font-semibold ${
             loading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700"

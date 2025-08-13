@@ -57,6 +57,7 @@ const QuotePage = () => {
       <h2 className="text-3xl font-bold mb-6">Get Your Insurance Quote</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Age */}
         <div>
           <label>Age</label>
           <input
@@ -69,6 +70,7 @@ const QuotePage = () => {
           />
         </div>
 
+        {/* Gender */}
         <div>
           <label>Gender</label>
           <select
@@ -82,6 +84,7 @@ const QuotePage = () => {
           </select>
         </div>
 
+        {/* Coverage */}
         <div>
           <label>Coverage Amount (in Lakh)</label>
           <input
@@ -94,6 +97,7 @@ const QuotePage = () => {
           />
         </div>
 
+        {/* Duration */}
         <div>
           <label>Duration (Years)</label>
           <input
@@ -106,6 +110,7 @@ const QuotePage = () => {
           />
         </div>
 
+        {/* Smoker */}
         <div>
           <label>Smoker?</label>
           <select
@@ -127,7 +132,6 @@ const QuotePage = () => {
         </button>
       </form>
 
-      {/* Result Section */}
       {quote && (
         <div className="mt-6 p-4 border rounded bg-gray-100">
           <h3 className="text-xl font-semibold mb-2">Estimated Premium</h3>
@@ -135,8 +139,14 @@ const QuotePage = () => {
           <p>📆 Annual: ৳ {quote.annual}</p>
 
           <Link
-            onClick={() => navigate("/policy-apply-from")}
-            className="mt-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+            to="/policy-apply-from"
+            state={{
+              estimatedPremium: quote.monthly, // ✅ FIX: sending with correct name
+              annual: quote.annual,
+              coverage: formData.coverage,
+              duration: formData.duration,
+            }}
+            className="mt-4 inline-block bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
           >
             Apply for Policy
           </Link>

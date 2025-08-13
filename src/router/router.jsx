@@ -11,6 +11,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import Login from "../Pages/Authentication/Login";
 import Register from "../Pages/Authentication/Register";
 import MyApplication from "../Pages/Dashboard/MyApplication/MyApplication";
+import Payment from "../Pages/Dashboard/Payment/Payment";
+ 
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +67,10 @@ export const router = createBrowserRouter([
       {
         path: "myApplication",
         Component: MyApplication,
+      },
+      {
+        path: "payment/:id",
+        Component: Payment,
       },
     ],
   },
