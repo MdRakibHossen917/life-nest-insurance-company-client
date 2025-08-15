@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
-import useAuth from "../../../hooks/useAuth";  
+import useAuth from "../../../hooks/useAuth";
 
 const AddPolicy = () => {
   const { register, handleSubmit, reset, watch } = useForm();
@@ -17,15 +17,22 @@ const AddPolicy = () => {
   const onSubmit = async (data) => {
     setLoading(true);
 
-    const imageFile = { image: data.image[0] };
     try {
-      const res = await axios.post(imageHostingURL, imageFile, {
+      // ✅ Use FormData for image upload
+      const formData = new FormData();
+      formData.append("image", data.image[0]);
+
+      const res = await axios.post(imageHostingURL, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (res.data.success) {
         const imageURL = res.data.data.url;
-        setUploadedImageURL(imageURL);  
+        setUploadedImageURL(imageURL);
+
+        // Unique tracking ID
+        const trackingId =
+          "TID-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
 
         const policy = {
           title: data.title,
@@ -38,23 +45,28 @@ const AddPolicy = () => {
           basePremium: parseFloat(data.basePremium),
           image: imageURL,
 
-          //Additional metadata
+          // Additional metadata
           creatorEmail: user?.email || "anonymous",
           premiumStatus: "unpaid",
           paymentStatus: "pending",
-          tracking_id: "TID-" + Date.now(),
+          tracking_id: trackingId,
           creation_date: new Date().toISOString(),
         };
 
         const response = await axios.post(
           "http://localhost:5000/policies",
-          policy
+          policy,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.accessToken || ""}`,
+            },
+          }
         );
 
         if (response.data.insertedId || response.data.success) {
           Swal.fire("Success", "Policy Added!", "success");
           reset();
-          setUploadedImageURL(""); 
+          setUploadedImageURL("");
         }
       }
     } catch (err) {
