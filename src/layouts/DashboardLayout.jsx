@@ -15,10 +15,13 @@ const DashboardLayout = () => {
             Add Policy
           </NavLink>
           <NavLink to="myApplication" className={navItemClass}>
-            My Application
+            My Policies
           </NavLink>
           <NavLink to="addBlogs" className={navItemClass}>
             Add Blogs
+          </NavLink>
+          <NavLink to="manageBlogs" className={navItemClass}>
+            Manage Blogs
           </NavLink>
           <NavLink to="profile" className={navItemClass}>
             Profile

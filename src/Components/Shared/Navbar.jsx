@@ -31,8 +31,8 @@ const Navbar = () => {
         </NavLink>
       </li>
       <li>
-        <NavLink to="/articles" className={"text-black font-bold"}>
-          Articles
+        <NavLink to="/blogs" className={"text-black font-bold"}>
+          Blogs
         </NavLink>
       </li>
       <li>

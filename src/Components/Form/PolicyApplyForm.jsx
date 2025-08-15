@@ -99,7 +99,7 @@ const PolicyApplyForm = () => {
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
-          navigate(`/dashboard/payment/${res.data.insertedId}`);
+         navigate("/dashboard/myApplication");
         });
 
         setFormData({

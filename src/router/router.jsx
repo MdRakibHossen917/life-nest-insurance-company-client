@@ -12,6 +12,9 @@ import Login from "../Pages/Authentication/Login";
 import Register from "../Pages/Authentication/Register";
 import MyApplication from "../Pages/Dashboard/MyApplication/MyApplication";
 import Payment from "../Pages/Dashboard/Payment/Payment";
+import ManageBlogs from "../Pages/Dashboard/ManageBlogs/ManageBlogs";
+import AddBlogs from "../Pages/Dashboard/AddBlogs/AddBlogs";
+import Blogs from "../Pages/Blogs/Blogs";
  
 
 export const router = createBrowserRouter([
@@ -38,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: "policy-apply-from",
         Component: PolicyApplyForm,
+      },
+      {
+        path: "blogs",
+        Component: Blogs,
       },
     ],
   },
@@ -71,6 +78,14 @@ export const router = createBrowserRouter([
       {
         path: "payment/:id",
         Component: Payment,
+      },
+      {
+        path: "manageBlogs",
+        Component: ManageBlogs,
+      },
+      {
+        path: "addBlogs",
+        Component: AddBlogs,
       },
     ],
   },
