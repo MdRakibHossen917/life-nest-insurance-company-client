@@ -15,6 +15,9 @@ import Payment from "../Pages/Dashboard/Payment/Payment";
 import ManageBlogs from "../Pages/Dashboard/ManageBlogs/ManageBlogs";
 import AddBlogs from "../Pages/Dashboard/AddBlogs/AddBlogs";
 import Blogs from "../Pages/Blogs/Blogs";
+import RequestAgent from "../Pages/RequestAgent/RequestAgent";
+import Profile from "../Pages/Dashboard/Profile/Profile";
+import ManageAgent from "../Pages/Dashboard/ManageAgent/ManageAgent";
  
 
 export const router = createBrowserRouter([
@@ -45,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: "blogs",
         Component: Blogs,
+      },
+      {
+        path: "requestAgent",
+        Component: RequestAgent,
       },
     ],
   },
@@ -84,8 +91,16 @@ export const router = createBrowserRouter([
         Component: ManageBlogs,
       },
       {
+        path: "manageAgent",
+        Component: ManageAgent,
+      },
+      {
         path: "addBlogs",
         Component: AddBlogs,
+      },
+      {
+        path: "profile",
+        Component: Profile,
       },
     ],
   },

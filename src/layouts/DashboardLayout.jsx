@@ -23,6 +23,9 @@ const DashboardLayout = () => {
           <NavLink to="manageBlogs" className={navItemClass}>
             Manage Blogs
           </NavLink>
+          <NavLink to="manageAgent" className={navItemClass}>
+            Manage Agent
+          </NavLink>
           <NavLink to="profile" className={navItemClass}>
             Profile
           </NavLink>

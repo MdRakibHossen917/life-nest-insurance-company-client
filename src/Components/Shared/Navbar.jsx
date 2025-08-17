@@ -36,7 +36,7 @@ const Navbar = () => {
         </NavLink>
       </li>
       <li>
-        <NavLink to="/beAgent" className={"text-black font-bold"}>
+        <NavLink to="/requestAgent" className={"text-black font-bold"}>
           Request_Agent
         </NavLink>
       </li>
