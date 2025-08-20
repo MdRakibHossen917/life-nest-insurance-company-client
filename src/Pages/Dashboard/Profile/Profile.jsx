@@ -186,7 +186,7 @@ const Profile = () => {
           <div className="text-center">
             <button
               type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-200"
+              className="bg-[#3f9b95] text-white px-6 py-2 rounded-md hover:bg-[#1f8780] transition duration-200"
             >
               Update Password
             </button>

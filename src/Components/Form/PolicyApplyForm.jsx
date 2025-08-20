@@ -283,7 +283,7 @@ const PolicyApplyForm = () => {
           className={`w-full px-6 py-3 rounded text-white text-lg font-semibold ${
             loading
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
+              : "bg-[#3f9b95] hover:bg-[#227a74]"
           }`}
         >
           {loading ? "Submitting..." : "Submit Application"}

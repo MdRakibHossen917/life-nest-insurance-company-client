@@ -126,7 +126,7 @@ const QuotePage = () => {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          className="bg-[#3f9b95] text-white px-6 py-2 rounded hover:bg-[#1c756f]"
         >
           Get Estimate
         </button>
@@ -146,7 +146,7 @@ const QuotePage = () => {
               coverage: formData.coverage,
               duration: formData.duration,
             }}
-            className="mt-4 inline-block bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+            className="mt-4 inline-block bg-[#3f9b95] text-white px-6 py-2 rounded hover:bg-[#1f7973]"
           >
             Apply for Policy
           </Link>

@@ -35,19 +35,12 @@ const DetailsPolicy = () => {
 
   return (
     <div className="max-w-4xl text-black mx-auto p-4">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-4 px-4 py-2 bg-gray-200 text-sm rounded hover:bg-gray-300"
-      >
-        ← Back
-      </button>
-
       <h2 className="text-4xl font-bold mb-4">{policy.title}</h2>
 
       <img
         src={policy.image}
         alt={policy.title}
-        className="w-full h-64 object-cover rounded mb-6"
+        className="w-full h-full  rounded mb-6"
       />
 
       <p className="text-lg text-gray-700 mb-4">{policy.shortDetails}</p>
@@ -61,14 +54,27 @@ const DetailsPolicy = () => {
       </p>
 
       <p className="text-base mt-2">
-        <strong>Term Duration:</strong> {policy.termDuration} years
+        <strong>Term Duration:</strong> {policy.duration}
       </p>
 
       <p className="text-base mt-2">
         <strong>Popularity:</strong> {policy.popularity} ⭐
       </p>
-      <div className="flex justify-end">
-        <Link to="/get-quote" className="btn w-50 ">
+      <p className="text-base mt-2">
+        <strong>
+          Description: <br />
+        </strong>{" "}
+        {policy.description}
+      </p>
+
+      <div className="flex justify-between my-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="mb-4 px-4 py-2 bg-[#3f9b95] text-sm rounded hover:bg-[#21716c] "
+        >
+          ← Back
+        </button>
+        <Link to="/get-quote" className="btn w-50 rounded bg-[#3f9b95] ">
           Quote Page
         </Link>
       </div>

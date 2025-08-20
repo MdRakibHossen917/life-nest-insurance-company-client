@@ -7,7 +7,7 @@ const PolicyCard = ({ policy }) => {
       <img
         src={policy.image}
         alt={policy.title}
-        className="w-full h-40 object-cover rounded mb-3"
+        className="w-full h-40 rounded mb-3"
       />
       <h3 className="text-xl font-bold">{policy.title}</h3>
       <p className="text-sm text-gray-500">{policy.category}</p>

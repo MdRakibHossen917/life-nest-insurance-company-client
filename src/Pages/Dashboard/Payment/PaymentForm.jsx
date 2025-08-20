@@ -80,9 +80,9 @@ const PaymentForm = () => {
       <button
         type="submit"
         disabled={!stripe || amount <= 0}
-        className="btn btn-primary w-full"
+        className="btn bg-[#3f9b95] w-full"
       >
-        Pay ${amount.toFixed(2)}
+        Pay Now
       </button>
       {error && <p className="text-red-500">{error}</p>}
     </form>
