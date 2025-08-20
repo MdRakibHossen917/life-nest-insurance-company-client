@@ -55,12 +55,18 @@ const DashboardLayout = () => {
               <NavLink to="assignedCustomers" className={navItemClass}>
                 Assigned Customers
               </NavLink>
+              <NavLink to="agentPolicyClearance" className={navItemClass}>
+                AgentPolicy Clearance
+              </NavLink>
             </>
           )}
 
           {/* Common Routes */}
           <NavLink to="myApplication" className={navItemClass}>
             My Policies
+          </NavLink>
+          <NavLink to="claimRequestPage" className={navItemClass}>
+            Claim Request Page
           </NavLink>
           <NavLink to="profile" className={navItemClass}>
             Profile

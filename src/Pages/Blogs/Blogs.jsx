@@ -1,16 +1,46 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router";
+import axios from "axios";
+import { getAuth } from "firebase/auth";
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/blogs")
-      .then((res) => setBlogs(res.data))
-      .catch((err) => console.error(err));
+    const fetchBlogs = async () => {
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+          setError("Failed to load blogs. Make sure you are logged in.");
+          setLoading(false);
+          return;
+        }
+
+        const token = await user.getIdToken();
+        const res = await axios.get("http://localhost:5000/blogs", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setBlogs(res.data);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load blogs. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
   }, []);
+
+  if (loading) return <p className="p-6">Loading blogs...</p>;
+  if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
     <div className="p-6 text-gray-700">
@@ -29,7 +59,7 @@ const Blogs = () => {
                 {blog.content.slice(0, 100)}...
               </p>
               <small className="text-gray-500">
-                By {blog.author} on{" "}
+                By {blog.authorName || blog.author} on{" "}
                 {new Date(blog.publishDate).toLocaleDateString()}
               </small>
               <Link

@@ -41,6 +41,11 @@ const Navbar = () => {
         </NavLink>
       </li>
       <li>
+        <NavLink to="/about" className={"text-black font-bold"}>
+         About
+        </NavLink>
+      </li>
+      <li>
         <NavLink to="/dashboard" className={"text-black font-bold"}>
           Dashboard
         </NavLink>
@@ -95,7 +100,7 @@ const Navbar = () => {
 
       {/* 🔶 Right: Auth button */}
       <div className="navbar-end">
-        <p>{user?.email || "Not email" }</p>
+        <p>{user?.email || "" }</p>
         {user ? (
        
           <button

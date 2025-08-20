@@ -40,7 +40,7 @@ const NewsletterSubscription = () => {
         text: data.message || "Thank you for subscribing!",
         type: "success",
       });
-      setFormData({ name: "", email: "" }); // Reset form
+      setFormData({ name: "", email: "" });  
     } catch (error) {
       setMessage({
         text: error.message || "Failed to subscribe. Please try again.",
@@ -52,13 +52,20 @@ const NewsletterSubscription = () => {
   };
 
   return (
-    <section className="py-12">
+    <section className="py-16 ">
       <div className="container mx-auto px-4 max-w-md">
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-            Subscribe to Our Newsletter
+        <div className="bg-white p-10 rounded-xl shadow-lg text-center">
+          {/* Title */}
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            Stay Updated!
           </h2>
+          {/* Subtitle */}
+          <p className="text-gray-600 mb-6">
+            Subscribe to our newsletter and get the latest updates on our
+            services, offers, and insurance tips.
+          </p>
 
+          {/* Message */}
           {message.text && (
             <div
               className={`mb-4 p-4 rounded ${
@@ -71,11 +78,12 @@ const NewsletterSubscription = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4 text-gray-800">
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-800 mb-1"
               >
                 Name
               </label>
@@ -121,8 +129,8 @@ const NewsletterSubscription = () => {
             </button>
           </form>
 
-          <p className="mt-4 text-sm text-gray-600 text-center">
-            We'll never share your email. Unsubscribe anytime.
+          <p className="mt-4 text-sm text-gray-500">
+            We respect your privacy. Unsubscribe anytime.
           </p>
         </div>
       </div>

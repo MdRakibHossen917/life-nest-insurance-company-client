@@ -28,6 +28,10 @@ import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
 import AdminRoute from "../routes/AdminRoute";
 import AgentRoute from "../routes/AgentRoute";
 import MakeAdmin from "../Pages/Dashboard/MakeAdmin/MakeAdmin";
+import AgentPolicyClearance from "../Pages/Dashboard/AgentPolicyClearance/AgentPolicyClearance";
+import ClaimRequestPage from "../Pages/Dashboard/ClaimRequestPage/ClaimRequestPage";
+import About from "../Pages/About/About";
+import Contact from "../Pages/Footer/Contact";
  
 
 export const router = createBrowserRouter([
@@ -43,6 +47,8 @@ export const router = createBrowserRouter([
       { path: "blogs", element: <Blogs /> },
       { path: "/blogs/:id", element: <BlogDetails /> },
       { path: "requestAgent", element: <RequestAgent /> },
+      { path: "about", element: <About /> },
+      { path: "contact", element: <Contact /> },
     ],
   },
 
@@ -120,9 +126,18 @@ export const router = createBrowserRouter([
           </AgentRoute>
         ),
       },
+      {
+        path: "agentPolicyClearance",
+        element: (
+          <AgentRoute>
+            <AgentPolicyClearance />
+          </AgentRoute>
+        ),
+      },
 
       // ✅ Common
       { path: "myApplication", element: <MyApplication /> },
+      { path: "claimRequestPage", element: <ClaimRequestPage /> },
       { path: "payment/:id", element: <Payment /> },
       { path: "profile", element: <Profile /> },
     ],
