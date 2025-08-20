@@ -21,11 +21,14 @@ const Blogs = () => {
         }
 
         const token = await user.getIdToken();
-        const res = await axios.get("http://localhost:5000/blogs", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get(
+          "https://life-nest-company-server.vercel.app/blogs",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setBlogs(res.data);
       } catch (err) {
@@ -44,7 +47,16 @@ const Blogs = () => {
 
   return (
     <div className="p-6 text-gray-700">
-      <h2 className="text-2xl font-bold mb-6">All Blogs</h2>
+      <div className="text-center mb-10">
+        <h2 className="text-3xl md:text-4xl font-extrabold mb-3 text-gray-900">
+          All Blogs  
+        </h2>
+        <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto">
+          Stay updated with the newest articles, tips, and insights from our
+          experts.
+        </p>
+      </div>
+
       {blogs.length === 0 ? (
         <p>No blogs available</p>
       ) : (

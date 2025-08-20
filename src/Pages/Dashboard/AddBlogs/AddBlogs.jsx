@@ -3,7 +3,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import useAuth from "../../../hooks/useAuth";
 import { getAuth } from "firebase/auth";
- 
 
 const AddBlogs = () => {
   const { user } = useAuth();
@@ -52,14 +51,18 @@ const AddBlogs = () => {
 
       const blogData = {
         ...formData,
-        publishDate: new Date(),  
+        publishDate: new Date(),
       };
 
-      const res = await axios.post("http://localhost:5000/blogs", blogData, {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
+      const res = await axios.post(
+        "https://life-nest-company-server.vercel.app/blogs",
+        blogData,
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+      );
 
       if (res.data.insertedId) {
         Swal.fire("Success", "Blog published successfully!", "success");

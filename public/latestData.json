@@ -1,0 +1,38 @@
+[
+  {
+    "_id": "64e8c1a1f1a2b3c4d5e6f701",
+    "title": "Understanding Life Insurance Basics",
+    "summary": "Learn the key concepts of life insurance and why it is important for financial security.",
+    "content": "Life insurance is a crucial financial product that protects your family in case of unforeseen events...",
+    "authorName": "Jane Alam",
+    "authorEmail": "janealam1@gmail.com",
+    "publishDate": "2025-08-21T08:30:00.000Z"
+  },
+  {
+    "_id": "64e8c1a1f1a2b3c4d5e6f702",
+    "title": "Top 5 Insurance Policies for Young Adults",
+    "summary": "Explore the best life insurance policies suitable for young adults starting their career.",
+    "content": "Starting early with life insurance can provide long-term benefits. Here are the top 5 policies...",
+    "authorName": "Enam Mahmud",
+    "authorEmail": "enam12@gmail.com",
+    "publishDate": "2025-08-20T10:15:00.000Z"
+  },
+  {
+    "_id": "64e8c1a1f1a2b3c4d5e6f703",
+    "title": "How Term Life Insurance Works",
+    "summary": "A comprehensive guide to term life insurance and its advantages.",
+    "content": "Term life insurance is a simple way to provide financial protection for a fixed period. It is cost-effective...",
+    "authorName": "Rakib Hossen",
+    "authorEmail": "rakib2002@gmail.com",
+    "publishDate": "2025-08-19T14:45:00.000Z"
+  },
+  {
+    "_id": "64e8c1a1f1a2b3c4d5e6f704",
+    "title": "Benefits of Whole Life Insurance",
+    "summary": "Understand the long-term benefits of whole life insurance policies.",
+    "content": "Whole life insurance not only provides lifelong coverage but also builds cash value over time...",
+    "authorName": "Arab",
+    "authorEmail": "arab@gmail.com",
+    "publishDate": "2025-08-18T09:00:00.000Z"
+  }
+]

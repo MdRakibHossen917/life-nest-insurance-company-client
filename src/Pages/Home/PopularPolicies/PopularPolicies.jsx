@@ -9,7 +9,9 @@ const PopularPolicies = () => {
   useEffect(() => {
     const fetchPolicies = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const apiUrl =
+          import.meta.env.VITE_API_URL ||
+          "https://life-nest-company-server.vercel.app";
         const res = await fetch(`${apiUrl}/policies/6`);
         if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
         const data = await res.json();

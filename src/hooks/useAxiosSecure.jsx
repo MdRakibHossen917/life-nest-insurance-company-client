@@ -1,12 +1,11 @@
 import axios from "axios";
 import useAuth from "./useAuth";
 
-
 const useAxiosSecure = () => {
   const { user } = useAuth();
 
   const instance = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: "https://life-nest-company-server.vercel.app",
   });
 
   instance.interceptors.request.use(

@@ -54,7 +54,7 @@ const AddPolicy = () => {
         };
 
         const response = await axios.post(
-          "http://localhost:5000/policies",
+          "https://life-nest-company-server.vercel.app/policies",
           policy,
           {
             headers: {

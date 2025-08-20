@@ -13,9 +13,12 @@ const ManageTransactions = () => {
       if (!user) return;
 
       const idToken = await user.getIdToken();
-      const res = await axios.get("http://localhost:5000/payments", {
-        headers: { Authorization: `Bearer ${idToken}` },
-      });
+      const res = await axios.get(
+        "https://life-nest-company-server.vercel.app/payments",
+        {
+          headers: { Authorization: `Bearer ${idToken}` },
+        }
+      );
       setPayments(res.data);
       setLoading(false);
     };

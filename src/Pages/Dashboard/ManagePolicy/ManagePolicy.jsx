@@ -26,7 +26,9 @@ const ManagePolicy = () => {
 
   const fetchPolicies = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/policies");
+      const res = await axios.get(
+        "https://life-nest-company-server.vercel.app/policies"
+      );
       setPolicies(res.data.policies || res.data);
       setLoading(false);
     } catch (err) {
@@ -38,9 +40,12 @@ const ManagePolicy = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this policy?")) return;
     try {
-      await axios.delete(`http://localhost:5000/policies/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://life-nest-company-server.vercel.app/policies/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       fetchPolicies();
     } catch (err) {
       console.error(err);
@@ -80,7 +85,7 @@ const ManagePolicy = () => {
 
     try {
       await axios.patch(
-        `http://localhost:5000/policies/${editPolicy._id}`,
+        `https://life-nest-company-server.vercel.app/policies/${editPolicy._id}`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

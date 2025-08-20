@@ -1,9 +1,8 @@
+// src/Pages/Login/SocialLogin.jsx
 import React from "react";
 import { useLocation, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import useAuth from "../../hooks/useAuth";
- 
- 
 
 const SocialLogin = () => {
   const { signInWithGoogle } = useAuth();
@@ -14,13 +13,35 @@ const SocialLogin = () => {
   const handleGoogleSignIn = () => {
     signInWithGoogle()
       .then((result) => {
-        console.log(result.user);
+        const user = result.user;
+
+        // 🔹 ব্যাকএন্ডে ইউজার সেভ/আপডেট
+        fetch("https://life-nest-company-server.vercel.app/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            role: "user", // চাইলে বাদও দিতে পারো, ব্যাকএন্ড ডিফল্ট দিবে
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("User saved/updated:", data);
+          })
+          .catch((err) => console.error("Backend error:", err));
+
+        // 🔹 সফল লগইন এলার্ট
         Swal.fire({
           icon: "success",
           title: "Login successful!",
           showConfirmButton: false,
           timer: 1500,
         });
+
         navigate(from, { replace: true });
       })
       .catch((error) => {

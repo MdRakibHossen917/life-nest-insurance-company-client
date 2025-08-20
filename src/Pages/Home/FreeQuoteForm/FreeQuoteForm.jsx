@@ -15,11 +15,14 @@ const FreeQuoteForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/quotes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        "https://life-nest-company-server.vercel.app/quotes",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
       if (!res.ok) throw new Error("Failed to submit");
       setMessage("Quote request submitted successfully!");
       setFormData({ name: "", email: "", phone: "", policyType: "" });

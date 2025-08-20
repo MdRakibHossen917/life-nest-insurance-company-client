@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router";
 import useUserRole from "../hooks/useUserRole";
+import logo from "../assets/Image/logo.png";
 
 const DashboardLayout = () => {
   const { role, roleLoading } = useUserRole();
@@ -22,8 +23,16 @@ const DashboardLayout = () => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row text-gray-800">
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-gray-100 p-6 shadow-md">
-        <h2 className="text-xl font-semibold mb-6">Dashboard</h2>
+      <aside className="w-full md:w-64 bg-gray-100 p-6 shadow-md flex flex-col">
+        <div className="flex items-center gap-3 mb-6">
+          <img
+            src={logo}
+            alt="Logo"
+            className="w-16 h-16 object-contain bg-white p-2 rounded"
+          />
+          <h2 className="text-xl font-bold">LifeNest</h2>
+        </div>
+
         <nav className="flex flex-col space-y-4">
           {/* Admin Routes */}
           {role?.toLowerCase() === "admin" && (
@@ -56,7 +65,7 @@ const DashboardLayout = () => {
                 Assigned Customers
               </NavLink>
               <NavLink to="agentPolicyClearance" className={navItemClass}>
-                AgentPolicy Clearance
+                Agent Policy Clearance
               </NavLink>
             </>
           )}
@@ -65,11 +74,11 @@ const DashboardLayout = () => {
           <NavLink to="myApplication" className={navItemClass}>
             My Policies
           </NavLink>
-          <NavLink to="claimRequestPage" className={navItemClass}>
-            Claim Request Page
-          </NavLink>
           <NavLink to="profile" className={navItemClass}>
             Profile
+          </NavLink>
+          <NavLink to="/dashboard" className={navItemClass}>
+            My Dashboard
           </NavLink>
           <NavLink to="/" className={navItemClass}>
             Back To Home
@@ -78,7 +87,7 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-6 bg-white">
+      <main className="flex-1 p-6 bg-white min-h-screen">
         <Outlet />
       </main>
     </div>

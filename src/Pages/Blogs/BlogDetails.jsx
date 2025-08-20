@@ -20,11 +20,14 @@ const BlogDetail = () => {
         }
 
         const token = await user.getIdToken();
-        const res = await axios.get(`http://localhost:5000/blogs/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get(
+          `https://life-nest-company-server.vercel.app/blogs/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setBlog(res.data);
       } catch (err) {

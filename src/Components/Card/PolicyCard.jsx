@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 const PolicyCard = ({ policy }) => {
   return (
-    <div className="border text-black rounded shadow hover:shadow-lg transition p-4 flex flex-col">
+    <div className="  text-black rounded shadow hover:shadow-lg transition p-4 flex flex-col">
       <img
         src={policy.image}
         alt={policy.title}
@@ -15,7 +15,7 @@ const PolicyCard = ({ policy }) => {
 
       <Link
         to={`/policies/${policy._id}`}
-        className="mt-auto inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-center"
+        className="mt-auto inline-block px-4 py-2 bg-[#47a9a2] text-white rounded hover:bg-[#1d7771] transition text-center"
       >
         View Details
       </Link>

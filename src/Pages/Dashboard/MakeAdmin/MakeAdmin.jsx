@@ -17,9 +17,8 @@ const MakeAdmin = () => {
       // Firebase token
       const token = await user.getIdToken();
 
-    
       const res = await axios.put(
-        "http://localhost:5000/make-admin",
+        "https://life-nest-company-server.vercel.app/make-admin",
         { email },
         {
           headers: {

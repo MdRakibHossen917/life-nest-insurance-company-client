@@ -22,13 +22,16 @@ const NewsletterSubscription = () => {
     setMessage({ text: "", type: "" });
 
     try {
-      const response = await fetch("http://localhost:5000/subscribe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://life-nest-company-server.vercel.app/subscribe",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
 
@@ -40,7 +43,7 @@ const NewsletterSubscription = () => {
         text: data.message || "Thank you for subscribing!",
         type: "success",
       });
-      setFormData({ name: "", email: "" });  
+      setFormData({ name: "", email: "" });
     } catch (error) {
       setMessage({
         text: error.message || "Failed to subscribe. Please try again.",
@@ -121,8 +124,8 @@ const NewsletterSubscription = () => {
               disabled={loading}
               className={`w-full py-2 px-4 rounded-md text-white font-medium ${
                 loading
-                  ? "bg-blue-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  ? "bg-[#439893] cursor-not-allowed"
+                  : "bg-[#3f9993] hover:bg-[#14615c]"
               } transition-colors duration-300`}
             >
               {loading ? "Subscribing..." : "Subscribe"}

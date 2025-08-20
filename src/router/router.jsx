@@ -13,15 +13,12 @@ import Register from "../Pages/Authentication/Register";
 import MyApplication from "../Pages/Dashboard/MyApplication/MyApplication";
 import Payment from "../Pages/Dashboard/Payment/Payment";
 import ManageBlogs from "../Pages/Dashboard/ManageBlogs/ManageBlogs";
-import AddBlogs from "../Pages/Dashboard/AddBlogs/AddBlogs";
 import Blogs from "../Pages/Blogs/Blogs";
 import RequestAgent from "../Pages/RequestAgent/RequestAgent";
 import Profile from "../Pages/Dashboard/Profile/Profile";
 import ManageAgent from "../Pages/Dashboard/ManageAgent/ManageAgent";
 import ManageApplications from "../Pages/Dashboard/ManageApplications/ManageApplications";
-import ManageTransactions from "../Pages/Dashboard/ManageTransactions/ManageTransactions";
 import AdminTransactions from "../Pages/Dashboard/AdminTransactions/AdminTransactions";
-import ManagePolicy from "../Pages/Dashboard/ManagePolicy/ManagePolicy";
 import BlogDetails from "../Pages/Blogs/BlogDetails";
 import AssignedCustomers from "../Pages/Dashboard/AssignedCustomers/AssignedCustomers";
 import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
@@ -29,9 +26,9 @@ import AdminRoute from "../routes/AdminRoute";
 import AgentRoute from "../routes/AgentRoute";
 import MakeAdmin from "../Pages/Dashboard/MakeAdmin/MakeAdmin";
 import AgentPolicyClearance from "../Pages/Dashboard/AgentPolicyClearance/AgentPolicyClearance";
-import ClaimRequestPage from "../Pages/Dashboard/ClaimRequestPage/ClaimRequestPage";
 import About from "../Pages/About/About";
 import Contact from "../Pages/Footer/Contact";
+import PrivateRoute from "../routes/PrivateRoute";
  
 
 export const router = createBrowserRouter([
@@ -63,11 +60,15 @@ export const router = createBrowserRouter([
 
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout /> 
+      </PrivateRoute>
+    ),
     children: [
       { index: true, Component: DashboardHome },
 
-      // 🔒 Admin only
+      //Admin only
       {
         path: "addPolicy",
         element: (
@@ -109,7 +110,7 @@ export const router = createBrowserRouter([
         ),
       },
 
-      // 🔒 Agent only
+      //Agent only
       {
         path: "manageBlogs",
         element: (
@@ -135,9 +136,8 @@ export const router = createBrowserRouter([
         ),
       },
 
-      // ✅ Common
+      //Common
       { path: "myApplication", element: <MyApplication /> },
-      { path: "claimRequestPage", element: <ClaimRequestPage /> },
       { path: "payment/:id", element: <Payment /> },
       { path: "profile", element: <Profile /> },
     ],

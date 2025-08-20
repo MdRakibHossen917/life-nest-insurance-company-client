@@ -11,7 +11,7 @@ const DetailsPolicy = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/policies/${id}`)
+      .get(`https://life-nest-company-server.vercel.app/policies/${id}`)
       .then((res) => {
         setPolicy(res.data);
         setLoading(false);

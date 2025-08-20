@@ -83,7 +83,7 @@ const PolicyApplyForm = () => {
       const idToken = await currentUser.getIdToken();
 
       const res = await axios.post(
-        "http://localhost:5000/applications",
+        "https://life-nest-company-server.vercel.app/applications",
         applicationData,
         {
           headers: {
@@ -99,7 +99,7 @@ const PolicyApplyForm = () => {
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
-         navigate("/dashboard/myApplication");
+          navigate("/dashboard/myApplication");
         });
 
         setFormData({
