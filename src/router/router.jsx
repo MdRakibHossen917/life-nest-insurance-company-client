@@ -18,90 +18,119 @@ import Blogs from "../Pages/Blogs/Blogs";
 import RequestAgent from "../Pages/RequestAgent/RequestAgent";
 import Profile from "../Pages/Dashboard/Profile/Profile";
 import ManageAgent from "../Pages/Dashboard/ManageAgent/ManageAgent";
+import ManageApplications from "../Pages/Dashboard/ManageApplications/ManageApplications";
+import ManageTransactions from "../Pages/Dashboard/ManageTransactions/ManageTransactions";
+import AdminTransactions from "../Pages/Dashboard/AdminTransactions/AdminTransactions";
+import ManagePolicy from "../Pages/Dashboard/ManagePolicy/ManagePolicy";
+import BlogDetails from "../Pages/Blogs/BlogDetails";
+import AssignedCustomers from "../Pages/Dashboard/AssignedCustomers/AssignedCustomers";
+import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
+import AdminRoute from "../routes/AdminRoute";
+import AgentRoute from "../routes/AgentRoute";
+import MakeAdmin from "../Pages/Dashboard/MakeAdmin/MakeAdmin";
  
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayout,
+    element: <RootLayout />,
     children: [
-      {
-        index: true,
-        Component: Home,
-      },
-      {
-        path: "all-policies",
-        Component: AllPolicies,
-      },
-      {
-        path: "policies/:id",
-        Component: DetailsPolicy,
-      },
-      {
-        path: "get-quote",
-        Component: QuotePage,
-      },
-      {
-        path: "policy-apply-from",
-        Component: PolicyApplyForm,
-      },
-      {
-        path: "blogs",
-        Component: Blogs,
-      },
-      {
-        path: "requestAgent",
-        Component: RequestAgent,
-      },
+      { index: true, element: <Home /> },
+      { path: "all-policies", element: <AllPolicies /> },
+      { path: "policies/:id", element: <DetailsPolicy /> },
+      { path: "get-quote", element: <QuotePage /> },
+      { path: "policy-apply-from", element: <PolicyApplyForm /> },
+      { path: "blogs", element: <Blogs /> },
+      { path: "/blogs/:id", element: <BlogDetails /> },
+      { path: "requestAgent", element: <RequestAgent /> },
     ],
   },
 
   {
     path: "/",
-    Component: AuthLayout,
+    element: <AuthLayout />,
     children: [
-      {
-        path: "login",
-        Component: Login,
-      },
-      {
-        path: "register",
-        Component: Register,
-      },
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
     ],
   },
+
   {
     path: "/dashboard",
-    element: <DashboardLayout></DashboardLayout>,
+    element: <DashboardLayout />,
     children: [
+      { index: true, Component: DashboardHome },
+
+      // 🔒 Admin only
       {
         path: "addPolicy",
-        Component: AddPolicy,
-      },
-      {
-        path: "myApplication",
-        Component: MyApplication,
-      },
-      {
-        path: "payment/:id",
-        Component: Payment,
-      },
-      {
-        path: "manageBlogs",
-        Component: ManageBlogs,
+        element: (
+          <AdminRoute>
+            <AddPolicy />
+          </AdminRoute>
+        ),
       },
       {
         path: "manageAgent",
-        Component: ManageAgent,
+        element: (
+          <AdminRoute>
+            <ManageAgent />
+          </AdminRoute>
+        ),
       },
       {
-        path: "addBlogs",
-        Component: AddBlogs,
+        path: "manageApplications",
+        element: (
+          <AdminRoute>
+            <ManageApplications />
+          </AdminRoute>
+        ),
       },
       {
-        path: "profile",
-        Component: Profile,
+        path: "adminTransactions",
+        element: (
+          <AdminRoute>
+            <AdminTransactions />
+          </AdminRoute>
+        ),
       },
+      {
+        path: "makeAdmin",
+        element: (
+          <AdminRoute>
+            <MakeAdmin />
+          </AdminRoute>
+        ),
+      },
+
+      // 🔒 Agent only
+      {
+        path: "manageBlogs",
+        element: (
+          <AgentRoute>
+            <ManageBlogs />
+          </AgentRoute>
+        ),
+      },
+      {
+        path: "assignedCustomers",
+        element: (
+          <AgentRoute>
+            <AssignedCustomers />
+          </AgentRoute>
+        ),
+      },
+
+      // ✅ Common
+      { path: "myApplication", element: <MyApplication /> },
+      { path: "payment/:id", element: <Payment /> },
+      { path: "profile", element: <Profile /> },
     ],
+  },
+
+  // fallback for not found
+  {
+    path: "*",
+    element: <h2 className="text-center text-red-500 mt-10">404 Not Found</h2>,
   },
 ]);

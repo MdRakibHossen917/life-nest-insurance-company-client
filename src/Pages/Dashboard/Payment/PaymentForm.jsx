@@ -1,7 +1,6 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
@@ -9,28 +8,13 @@ import Swal from "sweetalert2";
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const { id } = useParams(); // assuming your route param is 'id'
+  const { id } = useParams(); // applicationId
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
-
-  const { isLoading, data: application = {} } = useQuery({
-    queryKey: ["applications", id],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/applications/${id}`);
-      return res.data;
-    },
-    enabled: !!id,
-  });
-
-  if (isLoading) {
-    return <p className="text-center mt-4">Loading application info...</p>;
-  }
-
-  // Make sure amount is a valid number
-  const amount = Number(application.estimatedPremium) || 0;
+  const amount = 50; // Example: fetch from your application or props
   const amountInCents = Math.round(amount * 100);
 
   const handleSubmit = async (e) => {
@@ -40,39 +24,26 @@ const PaymentForm = () => {
     const card = elements.getElement(CardElement);
     if (!card) return;
 
-    // Step 1: Validate the card details
-    const { error: cardError, paymentMethod } =
-      await stripe.createPaymentMethod({
-        type: "card",
-        card,
-      });
+    const { error: cardError } = await stripe.createPaymentMethod({
+      type: "card",
+      card,
+      billing_details: {
+        name: user.displayName || "Anonymous",
+        email: user.email,
+      },
+    });
 
     if (cardError) {
       setError(cardError.message);
       return;
-    } else {
-      setError("");
-      console.log("Payment method:", paymentMethod);
     }
 
     try {
-      // Step 2: Create payment intent on server
       const { data } = await axiosSecure.post("/create-payment-intent", {
         amountInCents,
-        applicationId: id,
       });
-
-      const clientSecret = data.clientSecret;
-
-      // Step 3: Confirm the card payment
-      const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card,
-          billing_details: {
-            name: user.displayName || "Anonymous",
-            email: user.email || "",
-          },
-        },
+      const paymentResult = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: { card },
       });
 
       if (paymentResult.error) {
@@ -80,32 +51,20 @@ const PaymentForm = () => {
         return;
       }
 
-      setError("");
-
       if (paymentResult.paymentIntent.status === "succeeded") {
-        console.log("Payment succeeded!");
-
-        // Step 4: Save payment info in DB and update application status
-        const paymentData = {
+        await axiosSecure.post("/payments/save", {
           applicationId: id,
-          email: user.email,
           amount,
           transactionId: paymentResult.paymentIntent.id,
-          paymentMethod: paymentResult.paymentIntent.payment_method_types,
-        };
+        });
 
-        const paymentRes = await axiosSecure.post("/payments", paymentData);
+        await Swal.fire({
+          icon: "success",
+          title: "Payment Successful!",
+          html: `<strong>Transaction ID:</strong> <code>${paymentResult.paymentIntent.id}</code>`,
+        });
 
-        if (paymentRes.data.insertedId) {
-          await Swal.fire({
-            icon: "success",
-            title: "Payment Successful!",
-            html: `<strong>Transaction ID:</strong> <code>${paymentResult.paymentIntent.id}</code>`,
-            confirmButtonText: "Go to My Applications",
-          });
-
-          navigate("/dashboard/myApplication");
-        }
+        navigate("/dashboard/myApplication");
       }
     } catch (err) {
       setError(err.message || "Payment failed");
@@ -113,22 +72,20 @@ const PaymentForm = () => {
   };
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-6 rounded-xl shadow-md w-full max-w-md mx-auto"
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 p-6 max-w-md mx-auto bg-white rounded shadow"
+    >
+      <CardElement className="p-2 border rounded" />
+      <button
+        type="submit"
+        disabled={!stripe || amount <= 0}
+        className="btn btn-primary w-full"
       >
-        <CardElement className="p-2 border rounded" />
-        <button
-          type="submit"
-          className="btn btn-primary text-black w-full"
-          disabled={!stripe || amount <= 0}
-        >
-          Pay ${amount.toFixed(2)}
-        </button>
-        {error && <p className="text-red-500">{error}</p>}
-      </form>
-    </div>
+        Pay ${amount.toFixed(2)}
+      </button>
+      {error && <p className="text-red-500">{error}</p>}
+    </form>
   );
 };
 

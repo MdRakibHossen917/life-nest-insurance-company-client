@@ -1,15 +1,15 @@
 import React from 'react';
 import Hero from './Hero/Hero';
 import LatestBlogs from './LatestBlogs/LatestBlogs';
-import PopularPolicies from './PopularPolicies/PopularPolicies';
 import NewsletterSubscription from './NewsletterSubscription/NewsletterSubscription';
 import OurAgents from './OurAgents/OurAgents';
+import PopularPolicies from './PopularPolicies/PopularPolicies';
 
 const Home = () => {
     return (
       <div>
         <Hero></Hero>
-        <PopularPolicies></PopularPolicies>
+       <PopularPolicies></PopularPolicies>
         <LatestBlogs></LatestBlogs>
         <NewsletterSubscription></NewsletterSubscription>
         <OurAgents></OurAgents>

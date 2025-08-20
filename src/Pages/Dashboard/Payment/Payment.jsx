@@ -5,12 +5,10 @@ import PaymentForm from "./PaymentForm";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK_KEY);
 
-const Payment = () => {
-  return (
-    <Elements stripe={stripePromise}>
-      <PaymentForm></PaymentForm>
-    </Elements>
-  );
-};
+const Payment = () => (
+  <Elements stripe={stripePromise}>
+    <PaymentForm />
+  </Elements>
+);
 
 export default Payment;

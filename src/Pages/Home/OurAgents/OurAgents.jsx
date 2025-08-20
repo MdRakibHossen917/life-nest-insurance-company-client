@@ -5,49 +5,59 @@ const OurAgents = () => {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // dynamic agents fetch  
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/agents") // তোমার backend URL
-      .then((res) => {
-        setAgents(res.data); // 3 agents already limited from backend
+    const fetchAgents = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/agents");  
+        setAgents(res.data);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Failed to fetch agents:", err);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchAgents();
   }, []);
 
-  if (loading)
-    return <p className="text-center py-10 text-gray-500">Loading agents...</p>;
+  if (loading) {
+    return <p className="text-center py-8">Loading agents...</p>;
+  }
 
-  if (!agents.length)
-    return <p className="text-center py-10 text-gray-500">No agents found.</p>;
+  if (agents.length === 0) {
+    return <p className="text-center py-8">No agents found.</p>;
+  }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 text-gray-700">
-      <h2 className="text-3xl font-bold text-center mb-8">Meet Our Agents</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div className="py-12 mx-20 px-6 bg-gray-50 text-gray-800">
+      <h2 className="text-3xl font-bold text-center mb-10 text-gray-700">
+        Meet Our Agents
+      </h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {agents.map((agent) => (
           <div
             key={agent._id}
-            className="bg-white shadow-md rounded-lg p-4 text-center"
+            className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center"
           >
             <img
-              src={agent.photo || "/default-avatar.png"}
+              src={agent.photo || "https://via.placeholder.com/150"}
               alt={agent.name}
-              className="w-24 h-24 mx-auto rounded-full object-cover mb-4"
+              className="w-28 h-28 rounded-full mb-4 object-cover"
             />
-            <h3 className="text-xl font-semibold">{agent.name}</h3>
-            <p className="text-gray-500 mb-2">
-              Experience: {agent.experience || "N/A"} years
-            </p>
-            <p className="text-gray-500 mb-2">
-              Specialties: {agent.specialties || "General"}
-            </p>
-            {agent.note && (
-              <p className="text-gray-400 text-sm">{agent.note}</p>
+            <h3 className="text-xl font-semibold text-gray-800">
+              {agent.name}
+            </h3>
+            {agent.experience && (
+              <p className="text-gray-500 text-sm">
+                {agent.experience} years experience
+              </p>
             )}
+            {agent.specialties && (
+              <p className="text-gray-500 text-sm mt-1">{agent.specialties}</p>
+            )}
+            <p className="text-gray-600 text-sm mt-2">{agent.district}</p>
           </div>
         ))}
       </div>

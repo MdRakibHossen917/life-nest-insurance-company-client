@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router";
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -21,14 +22,22 @@ const Blogs = () => {
           {blogs.map((blog) => (
             <div
               key={blog._id}
-              className=" rounded-lg shadow-md p-4 hover:shadow-lg transition"
+              className="rounded-lg shadow-md p-4 hover:shadow-lg transition"
             >
               <h3 className="text-xl font-semibold mb-2">{blog.title}</h3>
-              <p className="text-gray-700 mb-4">{blog.content}</p>
+              <p className="text-gray-700 mb-4">
+                {blog.content.slice(0, 100)}...
+              </p>
               <small className="text-gray-500">
                 By {blog.author} on{" "}
                 {new Date(blog.publishDate).toLocaleDateString()}
               </small>
+              <Link
+                to={`/blogs/${blog._id}`}
+                className="text-blue-500 hover:underline mt-2 block"
+              >
+                Read More
+              </Link>
             </div>
           ))}
         </div>

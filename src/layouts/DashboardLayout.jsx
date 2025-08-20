@@ -1,30 +1,66 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router";
+import useUserRole from "../hooks/useUserRole";
 
 const DashboardLayout = () => {
+  const { role, roleLoading } = useUserRole();
+  console.log("User role:", role);
+
+  if (roleLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-lg font-semibold">Loading Dashboard...</p>
+      </div>
+    );
+  }
+
   const navItemClass = ({ isActive }) =>
-    isActive ? "font-bold text-blue-600" : "text-gray-700";
+    isActive
+      ? "font-semibold text-blue-600 border-l-4 border-blue-600 pl-2"
+      : "text-gray-700 hover:text-blue-500 transition";
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex flex-col md:flex-row text-gray-800">
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-100 p-6 shadow-md">
+      <aside className="w-full md:w-64 bg-gray-100 p-6 shadow-md">
         <h2 className="text-xl font-semibold mb-6">Dashboard</h2>
         <nav className="flex flex-col space-y-4">
-          <NavLink to="addPolicy" className={navItemClass}>
-            Add Policy
-          </NavLink>
+          {/* Admin Routes */}
+          {role?.toLowerCase() === "admin" && (
+            <>
+              <NavLink to="addPolicy" className={navItemClass}>
+                Add Policy
+              </NavLink>
+              <NavLink to="manageAgent" className={navItemClass}>
+                Manage Agent
+              </NavLink>
+              <NavLink to="manageApplications" className={navItemClass}>
+                Manage Applications
+              </NavLink>
+              <NavLink to="adminTransactions" className={navItemClass}>
+                All Transactions
+              </NavLink>
+              <NavLink to="makeAdmin" className={navItemClass}>
+                Make Admin
+              </NavLink>
+            </>
+          )}
+
+          {/* Agent Routes */}
+          {role?.toLowerCase() === "agent" && (
+            <>
+              <NavLink to="manageBlogs" className={navItemClass}>
+                Manage Blogs
+              </NavLink>
+              <NavLink to="assignedCustomers" className={navItemClass}>
+                Assigned Customers
+              </NavLink>
+            </>
+          )}
+
+          {/* Common Routes */}
           <NavLink to="myApplication" className={navItemClass}>
             My Policies
-          </NavLink>
-          <NavLink to="addBlogs" className={navItemClass}>
-            Add Blogs
-          </NavLink>
-          <NavLink to="manageBlogs" className={navItemClass}>
-            Manage Blogs
-          </NavLink>
-          <NavLink to="manageAgent" className={navItemClass}>
-            Manage Agent
           </NavLink>
           <NavLink to="profile" className={navItemClass}>
             Profile
@@ -35,9 +71,8 @@ const DashboardLayout = () => {
         </nav>
       </aside>
 
-      {/* Main content area */}
+      {/* Main content */}
       <main className="flex-1 p-6 bg-white">
-        {/* Render nested routes here */}
         <Outlet />
       </main>
     </div>

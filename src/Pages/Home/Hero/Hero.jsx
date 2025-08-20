@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import HeroImg1 from "../../../assets/Hero/girl-bumping-fists-with-parents.jpg";
 import HeroImg2 from "../../../assets/Hero/img12.jpg";
 import HeroImg3 from "../../../assets/Hero/img14.jpg";
+import { Link } from "react-router";
 
 const slides = [
   {
@@ -79,20 +80,21 @@ const Hero = () => {
               >
                 {slide.tagline}
               </p>
-              <button
-                style={{
-                  backgroundColor: "#1E90FF",
-                  color: "white",
-                  padding: "12px 24px",
-                  border: "none",
-                  borderRadius: "6px",
-                  fontSize: "1rem",
-                  cursor: "pointer",
-                }}
-                onClick={() => alert("Get a Free Quote clicked!")}
-              >
-                Get a Free Quote
-              </button>
+              <Link to="/get-quote">
+                <button
+                  style={{
+                    backgroundColor: "#1E90FF",
+                    color: "white",
+                    padding: "12px 24px",
+                    border: "none",
+                    borderRadius: "6px",
+                    fontSize: "1rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  Get a Free Quote
+                </button>
+              </Link>
             </div>
           )}
         </div>

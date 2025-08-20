@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const RequestAgent = () => {
   const { user } = useAuth();
@@ -14,101 +15,136 @@ const RequestAgent = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    if (!user) {
+      Swal.fire(
+        "Login Required",
+        "Please login first to submit request",
+        "warning"
+      );
+      return;
+    }
+
     const agentRequest = {
       name: data.name,
-      email: data.email,
+      email: user.email,
       phone: data.phone,
       nid: data.nid,
       district: data.district,
-      status: "pending",
-      requestedBy: user?.email,
     };
 
     try {
-      await axiosSecure.post("/agents", agentRequest);
-      alert("Agent request submitted successfully!");
+      const res = await axiosSecure.post("/agents", agentRequest);
+      Swal.fire(
+        "Success",
+        res.data.message || "Agent request submitted!",
+        "success"
+      );
       reset();
     } catch (err) {
-      console.error(err);
-      alert("Failed to submit request");
+      console.error(err.response?.data || err.message);
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Failed to submit request",
+        "error"
+      );
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 text-gray-800 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">
+    <div className="max-w-lg mx-auto p-8 bg-white rounded-xl shadow-lg text-gray-900">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-700">
         Request to Become an Agent
       </h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Name */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Full Name */}
         <div>
-          <label className="block mb-1">Full Name</label>
+          <label className="block mb-2 font-medium text-gray-600">
+            Full Name
+          </label>
           <input
             type="text"
             {...register("name", { required: true })}
-            className="w-full border rounded-md p-2"
+            placeholder="Your full name"
+            className={`w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 transition ${
+              errors.name ? "border-red-500 ring-red-200" : "border-gray-300"
+            }`}
           />
           {errors.name && (
-            <span className="text-red-500 text-sm">Name is required</span>
+            <p className="text-red-500 text-sm mt-1">Name is required</p>
           )}
         </div>
 
         {/* Email */}
         <div>
-          <label className="block mb-1">Email</label>
+          <label className="block mb-2 font-medium text-gray-600">Email</label>
           <input
             type="email"
             defaultValue={user?.email}
-            {...register("email", { required: true })}
-            className="w-full border rounded-md p-2"
             readOnly
+            className="w-full border rounded-lg p-3 bg-gray-100 cursor-not-allowed"
           />
         </div>
 
         {/* Phone */}
         <div>
-          <label className="block mb-1">Phone</label>
+          <label className="block mb-2 font-medium text-gray-600">Phone</label>
           <input
             type="text"
             {...register("phone", { required: true })}
-            className="w-full border rounded-md p-2"
+            placeholder="01XXXXXXXXX"
+            className={`w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 transition ${
+              errors.phone ? "border-red-500 ring-red-200" : "border-gray-300"
+            }`}
           />
           {errors.phone && (
-            <span className="text-red-500 text-sm">Phone is required</span>
+            <p className="text-red-500 text-sm mt-1">Phone is required</p>
           )}
         </div>
 
         {/* NID */}
         <div>
-          <label className="block mb-1">National ID (NID)</label>
+          <label className="block mb-2 font-medium text-gray-600">
+            National ID (NID)
+          </label>
           <input
             type="text"
             {...register("nid", { required: true })}
-            className="w-full border rounded-md p-2"
+            placeholder="Your NID number"
+            className={`w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 transition ${
+              errors.nid ? "border-red-500 ring-red-200" : "border-gray-300"
+            }`}
           />
           {errors.nid && (
-            <span className="text-red-500 text-sm">NID is required</span>
+            <p className="text-red-500 text-sm mt-1">NID is required</p>
           )}
         </div>
 
         {/* District */}
         <div>
-          <label className="block mb-1">District</label>
+          <label className="block mb-2 font-medium text-gray-600">
+            District
+          </label>
           <input
             type="text"
             {...register("district", { required: true })}
-            className="w-full border rounded-md p-2"
+            placeholder="Your district"
+            className={`w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 transition ${
+              errors.district
+                ? "border-red-500 ring-red-200"
+                : "border-gray-300"
+            }`}
           />
           {errors.district && (
-            <span className="text-red-500 text-sm">District is required</span>
+            <p className="text-red-500 text-sm mt-1">District is required</p>
           )}
         </div>
 
+        {/* Submit Button */}
         <div className="text-center">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition shadow-md"
           >
             Submit Request
           </button>

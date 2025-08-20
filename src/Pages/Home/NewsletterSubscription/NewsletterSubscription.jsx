@@ -52,7 +52,7 @@ const NewsletterSubscription = () => {
   };
 
   return (
-    <section className="py-12 bg-gray-100">
+    <section className="py-12">
       <div className="container mx-auto px-4 max-w-md">
         <div className="bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
